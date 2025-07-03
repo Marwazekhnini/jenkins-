@@ -8,6 +8,16 @@ pipeline {
     }
 
     stages {
+        stage('Clone Repository') {
+            steps {
+                echo '🔄 Cloning repository...'
+                sh 'git clone https://github.com/your-username/dotnet.git'
+                dir('dotnet') {
+                    sh 'ls -la'
+                }
+            }
+        }
+
         stage('Setup .NET SDK') {
             steps {
                 echo '📦 Installing .NET SDK...'
@@ -20,33 +30,41 @@ pipeline {
 
         stage('Restore Dependencies') {
             steps {
-                echo '🔧 Restoring project dependencies...'
-                sh '~/.dotnet/dotnet restore > restore.log'
-                sh 'cat restore.log'
+                dir('dotnet') {
+                    echo '🔧 Restoring project dependencies...'
+                    sh '~/.dotnet/dotnet restore > restore.log'
+                    sh 'cat restore.log'
+                }
             }
         }
 
         stage('Build') {
             steps {
-                echo '🏗️ Building the project...'
-                sh '~/.dotnet/dotnet build --configuration Release > build.log'
-                sh 'cat build.log'
+                dir('dotnet') {
+                    echo '🏗️ Building the project...'
+                    sh '~/.dotnet/dotnet build --configuration Release > build.log'
+                    sh 'cat build.log'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                echo '🧪 Running tests...'
-                sh '~/.dotnet/dotnet test --no-build --logger "trx" > test.log'
-                sh 'cat test.log'
+                dir('dotnet') {
+                    echo '🧪 Running tests...'
+                    sh '~/.dotnet/dotnet test --no-build --logger "trx" > test.log'
+                    sh 'cat test.log'
+                }
             }
         }
 
         stage('Fake Deploy') {
             steps {
-                echo '🚀 Pretending to deploy the app...'
-                sh 'echo "Deployment simulated!" > deploy.log'
-                sh 'cat deploy.log'
+                dir('dotnet') {
+                    echo '🚀 Pretending to deploy the app...'
+                    sh 'echo "Deployment simulated!" > deploy.log'
+                    sh 'cat deploy.log'
+                }
             }
         }
     }
