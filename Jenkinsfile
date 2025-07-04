@@ -2,74 +2,59 @@ pipeline {
     agent any
 
     environment {
-    DOTNET_VERSION = '8.0.411'
-    DOTNET_ROOT = "${HOME}/.dotnet"
-    // No PATH modification here
-}
+        DOTNET_VERSION = '8.0.411'
+        DOTNET_ROOT = "${HOME}/.dotnet"
+    }
 
     stages {
-
-        stage('List Files (Validate Checkout)') {
+        stage('Setup .NET SDK') {
             steps {
-                echo '📁 Listing checked out files...'
-                sh 'ls -la'
+                echo '📦 Installing .NET SDK...'
+                sh '''
+                    wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+                    chmod +x dotnet-install.sh
+                    ./dotnet-install.sh --version $DOTNET_VERSION
+                '''
             }
         }
 
-        stage('Setup .NET SDK') {
-    steps {
-        echo '📦 Installing .NET SDK 8.0.411...'
-        sh '''
-            wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
-            chmod +x dotnet-install.sh
-            ./dotnet-install.sh --version 8.0.411
-            export PATH=$HOME/.dotnet:$PATH
-            $HOME/.dotnet/dotnet --version
-        '''
-    }
-}
-
         stage('Restore Dependencies') {
-    steps {
-        dir('jenkins-') {
-            echo '🔧 Restoring dependencies...'
-            sh '''
-                export PATH=$HOME/.dotnet:$PATH
-                dotnet restore > restore.log
-                cat restore.log
-            '''
+            steps {
+                echo '🔧 Restoring dependencies...'
+                sh '''
+                    export PATH=$HOME/.dotnet:$PATH
+                    dotnet --version
+                    dotnet restore
+                '''
+            }
         }
-    }
-}
-
 
         stage('Build') {
-    steps {
-        dir('jenkins-') {
-            echo '🏗️ Building...'
-            sh '''
-                export PATH=$HOME/.dotnet:$PATH
-                dotnet build --configuration Release > build.log
-                cat build.log
-            '''
+            steps {
+                echo '🏗️ Building project...'
+                sh '''
+                    export PATH=$HOME/.dotnet:$PATH
+                    dotnet build --configuration Release
+                '''
+            }
         }
-    }
-}
-
 
         stage('Test') {
             steps {
-                echo '🧪 Testing...'
-                sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet test --no-build > test.log'
-                sh 'cat test.log'
+                echo '🧪 Running tests...'
+                sh '''
+                    export PATH=$HOME/.dotnet:$PATH
+                    dotnet test --no-build
+                '''
             }
         }
 
         stage('Fake Deploy') {
             steps {
                 echo '🚀 Simulating deployment...'
-                sh 'echo "Deployment simulated!" > deploy.log'
-                sh 'cat deploy.log'
+                sh '''
+                    echo "Deployment simulated!"
+                '''
             }
         }
     }
