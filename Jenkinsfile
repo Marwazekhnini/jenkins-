@@ -29,12 +29,14 @@ pipeline {
 }
 
         stage('Restore Dependencies') {
-            steps {
-                echo '🔧 Restoring dependencies...'
-                sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet restore > restore.log'
-                sh 'cat restore.log'
-            }
-        }
+    steps {
+        sh '''
+            export PATH=$HOME/.dotnet:$PATH
+            dotnet restore > restore.log
+            cat restore.log
+        '''
+    }
+}
 
         stage('Build') {
             steps {
