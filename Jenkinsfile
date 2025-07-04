@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
+    DOTNET_VERSION = '8.0.411'
     DOTNET_ROOT = "${HOME}/.dotnet"
-    PATH = "${HOME}/.dotnet:${env.PATH}"
+    // No PATH modification here
 }
 
     stages {
@@ -30,21 +31,31 @@ pipeline {
 
         stage('Restore Dependencies') {
     steps {
-        sh '''
-            export PATH=$HOME/.dotnet:$PATH
-            dotnet restore > restore.log
-            cat restore.log
-        '''
+        dir('jenkins-') {
+            echo '🔧 Restoring dependencies...'
+            sh '''
+                export PATH=$HOME/.dotnet:$PATH
+                dotnet restore > restore.log
+                cat restore.log
+            '''
+        }
     }
 }
 
+
         stage('Build') {
-            steps {
-                echo '🏗️ Building...'
-                sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet build --configuration Release > build.log'
-                sh 'cat build.log'
-            }
+    steps {
+        dir('jenkins-') {
+            echo '🏗️ Building...'
+            sh '''
+                export PATH=$HOME/.dotnet:$PATH
+                dotnet build --configuration Release > build.log
+                cat build.log
+            '''
         }
+    }
+}
+
 
         stage('Test') {
             steps {
