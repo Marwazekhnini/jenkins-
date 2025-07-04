@@ -4,14 +4,17 @@ pipeline {
     environment {
         DOTNET_VERSION = '8.0'
         DOTNET_ROOT = "${HOME}/.dotnet"
-        PATH = "${DOTNET_ROOT}:${PATH}"
+        PATH = "${HOME}/.dotnet:${PATH}"
     }
 
     stages {
+
         stage('Clone Repository') {
             steps {
                 echo '🔄 Cloning repository...'
-                sh 'git clone https://github.com/your-username/dotnet.git'
+                // 🔴 REPLACE this with your real repo URL
+                sh 'https://github.com/Marwazekhnini/dotnet.git'
+
                 dir('dotnet') {
                     sh 'ls -la'
                 }
@@ -23,7 +26,8 @@ pipeline {
                 echo '📦 Installing .NET SDK...'
                 sh 'wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh'
                 sh 'chmod +x dotnet-install.sh'
-                sh './dotnet-install.sh --version $DOTNET_VERSION'
+                sh './dotnet-install.sh --version $DOTNET_VERSION || exit 1'
+                sh '$HOME/.dotnet/dotnet --version'
                 echo '✅ .NET SDK installed.'
             }
         }
@@ -32,7 +36,7 @@ pipeline {
             steps {
                 dir('dotnet') {
                     echo '🔧 Restoring project dependencies...'
-                    sh '~/.dotnet/dotnet restore > restore.log'
+                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet restore > restore.log'
                     sh 'cat restore.log'
                 }
             }
@@ -42,7 +46,7 @@ pipeline {
             steps {
                 dir('dotnet') {
                     echo '🏗️ Building the project...'
-                    sh '~/.dotnet/dotnet build --configuration Release > build.log'
+                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet build --configuration Release > build.log'
                     sh 'cat build.log'
                 }
             }
@@ -52,7 +56,7 @@ pipeline {
             steps {
                 dir('dotnet') {
                     echo '🧪 Running tests...'
-                    sh '~/.dotnet/dotnet test --no-build --logger "trx" > test.log'
+                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet test --no-build --logger "trx" > test.log'
                     sh 'cat test.log'
                 }
             }
