@@ -9,13 +9,10 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
+        stage('List Files (Validate Checkout)') {
             steps {
-                echo '🔄 Cloning repository...'
-                sh 'git clone https://github.com/Marwazekhnini/jenkins-.git'
-                dir('jenkins-') {
-                    sh 'ls -la'
-                }
+                echo '📁 Listing checked out files...'
+                sh 'ls -la'
             }
         }
 
@@ -31,41 +28,33 @@ pipeline {
 
         stage('Restore Dependencies') {
             steps {
-                dir('jenkins-') {
-                    echo '🔧 Restoring dependencies...'
-                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet restore > restore.log'
-                    sh 'cat restore.log'
-                }
+                echo '🔧 Restoring dependencies...'
+                sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet restore > restore.log'
+                sh 'cat restore.log'
             }
         }
 
         stage('Build') {
             steps {
-                dir('jenkins-') {
-                    echo '🏗️ Building...'
-                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet build --configuration Release > build.log'
-                    sh 'cat build.log'
-                }
+                echo '🏗️ Building...'
+                sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet build --configuration Release > build.log'
+                sh 'cat build.log'
             }
         }
 
         stage('Test') {
             steps {
-                dir('jenkins-') {
-                    echo '🧪 Testing...'
-                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet test --no-build > test.log'
-                    sh 'cat test.log'
-                }
+                echo '🧪 Testing...'
+                sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet test --no-build > test.log'
+                sh 'cat test.log'
             }
         }
 
         stage('Fake Deploy') {
             steps {
-                dir('jenkins-') {
-                    echo '🚀 Simulating deployment...'
-                    sh 'echo "Deployment simulated!" > deploy.log'
-                    sh 'cat deploy.log'
-                }
+                echo '🚀 Simulating deployment...'
+                sh 'echo "Deployment simulated!" > deploy.log'
+                sh 'cat deploy.log'
             }
         }
     }
