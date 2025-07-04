@@ -2,10 +2,11 @@ pipeline {
     agent any
 
     environment {
-        DOTNET_VERSION = '8.0'
-        DOTNET_ROOT = "${HOME}/.dotnet"
-        PATH = "${HOME}/.dotnet:${PATH}"
-    }
+    DOTNET_VERSION = '8.0.411'
+    DOTNET_ROOT = "${HOME}/.dotnet"
+    PATH = "${HOME}/.dotnet:${PATH}"
+}
+
 
     stages {
 
@@ -17,14 +18,17 @@ pipeline {
         }
 
         stage('Setup .NET SDK') {
-            steps {
-                echo '📦 Installing .NET SDK...'
-                sh 'wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh'
-                sh 'chmod +x dotnet-install.sh'
-                sh './dotnet-install.sh --version $DOTNET_VERSION || exit 1'
-                sh '$HOME/.dotnet/dotnet --version'
-            }
-        }
+    steps {
+        echo '📦 Installing .NET SDK 8.0.411...'
+        sh '''
+            wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+            chmod +x dotnet-install.sh
+            ./dotnet-install.sh --version 8.0.411
+            export PATH=$HOME/.dotnet:$PATH
+            $HOME/.dotnet/dotnet --version
+        '''
+    }
+}
 
         stage('Restore Dependencies') {
             steps {
