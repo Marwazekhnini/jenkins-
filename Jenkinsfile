@@ -12,50 +12,48 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 echo '🔄 Cloning repository...'
-                // 🛑 REPLACE THIS WITH YOUR REAL REPO URL if different
-                sh 'git clone https://github.com/Marwazekhnini/jenkins-.git || exit 1'
+                sh 'git clone https://github.com/Marwazekhnini/jenkins-.git'
                 dir('jenkins-') {
                     sh 'ls -la'
                 }
             }
         }
 
-        stage('Install .NET SDK') {
+        stage('Setup .NET SDK') {
             steps {
-                echo '📦 Downloading .NET SDK...'
+                echo '📦 Installing .NET SDK...'
                 sh 'wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh'
                 sh 'chmod +x dotnet-install.sh'
                 sh './dotnet-install.sh --version $DOTNET_VERSION || exit 1'
                 sh '$HOME/.dotnet/dotnet --version'
-                echo '✅ .NET SDK is installed.'
             }
         }
 
         stage('Restore Dependencies') {
             steps {
                 dir('jenkins-') {
-                    echo '🔧 Restoring project dependencies...'
-                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet restore > restore.log || exit 1'
+                    echo '🔧 Restoring dependencies...'
+                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet restore > restore.log'
                     sh 'cat restore.log'
                 }
             }
         }
 
-        stage('Build Project') {
+        stage('Build') {
             steps {
                 dir('jenkins-') {
-                    echo '🏗️ Building the project...'
-                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet build --configuration Release > build.log || exit 1'
+                    echo '🏗️ Building...'
+                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet build --configuration Release > build.log'
                     sh 'cat build.log'
                 }
             }
         }
 
-        stage('Run Tests') {
+        stage('Test') {
             steps {
                 dir('jenkins-') {
-                    echo '🧪 Running tests...'
-                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet test --no-build > test.log || exit 1'
+                    echo '🧪 Testing...'
+                    sh 'PATH=$HOME/.dotnet:$PATH $HOME/.dotnet/dotnet test --no-build > test.log'
                     sh 'cat test.log'
                 }
             }
@@ -65,7 +63,7 @@ pipeline {
             steps {
                 dir('jenkins-') {
                     echo '🚀 Simulating deployment...'
-                    sh 'echo "🎉 Deployment simulated!" > deploy.log'
+                    sh 'echo "Deployment simulated!" > deploy.log'
                     sh 'cat deploy.log'
                 }
             }
@@ -74,10 +72,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Pipeline finished successfully!'
+            echo '🎉 Pipeline succeeded!'
         }
         failure {
-            echo '❌ Pipeline failed. Check logs for details.'
+            echo '💥 Pipeline failed!'
         }
     }
 }
