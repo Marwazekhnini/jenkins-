@@ -2,11 +2,9 @@ pipeline {
     agent any
 
     environment {
-    DOTNET_VERSION = '8.0.411'
     DOTNET_ROOT = "${HOME}/.dotnet"
-    PATH = "${HOME}/.dotnet:${PATH}"
+    PATH = "${HOME}/.dotnet:${env.PATH}"
 }
-
 
     stages {
 
