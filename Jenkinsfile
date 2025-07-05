@@ -62,6 +62,11 @@ pipeline {
             }
         }
     }
+        stage('Debug Workspace') {
+           steps {
+              sh 'pwd && ls -R'
+     }
+ }
 
     post {
         success {
