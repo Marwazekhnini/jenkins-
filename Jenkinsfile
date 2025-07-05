@@ -24,7 +24,7 @@ pipeline {
         echo '🔧 Restoring dependencies...'
         sh '''
             export PATH=$HOME/.dotnet:$PATH
-            cd Downloads/dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+            cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
             dotnet --version
             dotnet restore MinimalAPIDemo.sln
         '''
@@ -36,7 +36,7 @@ pipeline {
         echo '🏗️ Building project...'
         sh '''
             export PATH=$HOME/.dotnet:$PATH
-            cd Downloads/dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+            cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
             dotnet build --configuration Release
         '''
     }
