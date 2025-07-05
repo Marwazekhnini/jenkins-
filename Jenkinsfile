@@ -2,9 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOTNET_VERSION = '8.0.411'
-        DOTNET_ROOT = "${HOME}/.dotnet"
-    }
+    DOTNET_VERSION = '8.0.411'
+    DOTNET_ROOT = "${HOME}/.dotnet"
+    PATH = "${DOTNET_ROOT}:${PATH}"
+}
 
     stages {
         stage('Setup .NET SDK') {
@@ -19,35 +20,38 @@ pipeline {
         }
 
         stage('Restore Dependencies') {
-            steps {
-                echo '🔧 Restoring dependencies...'
-                sh '''
-                    export PATH=$HOME/.dotnet:$PATH
-                    dotnet --version
-                    dotnet restore
-                '''
-            }
-        }
+    steps {
+        echo '🔧 Restoring dependencies...'
+        sh '''
+            export PATH=$HOME/.dotnet:$PATH
+            cd Downloads/dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+            dotnet --version
+            dotnet restore MinimalAPIDemo.sln
+        '''
+    }
+}
 
         stage('Build') {
-            steps {
-                echo '🏗️ Building project...'
-                sh '''
-                    export PATH=$HOME/.dotnet:$PATH
-                    dotnet build --configuration Release
-                '''
-            }
-        }
+    steps {
+        echo '🏗️ Building project...'
+        sh '''
+            export PATH=$HOME/.dotnet:$PATH
+            cd Downloads/dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+            dotnet build --configuration Release
+        '''
+    }
+}
 
         stage('Test') {
-            steps {
-                echo '🧪 Running tests...'
-                sh '''
-                    export PATH=$HOME/.dotnet:$PATH
-                    dotnet test --no-build
-                '''
-            }
-        }
+    steps {
+        echo '🧪 Running tests...'
+        sh '''
+            export PATH=$HOME/.dotnet:$PATH
+            cd Downloads/dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+            dotnet test --no-build
+        '''
+    }
+}
 
         stage('Fake Deploy') {
             steps {
