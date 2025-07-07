@@ -36,4 +36,49 @@ pipeline {
                 echo '🏗️ Building project...'
                 sh '''
                     export PATH=$DOTNET_ROOT:$PATH
-                    cd dotnet-minimal-web-api-example/DotNetM
+                    cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+                    dotnet build --configuration Release
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo '🧪 Running tests...'
+                sh '''
+                    export PATH=$DOTNET_ROOT:$PATH
+                    cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+                    dotnet test --no-build
+                '''
+            }
+        }
+
+        stage('Fake Deploy') {
+            steps {
+                echo '🚀 Simulating deployment...'
+                sh '''
+                    echo "Deployment simulated!"
+                '''
+            }
+        }
+
+        stage('Debug Workspace') {
+            steps {
+                echo '🔍 Debugging workspace...'
+                sh '''
+                    pwd
+                    ls -R
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '🎉 Pipeline succeeded!'
+        }
+        failure {
+            echo '💥 Pipeline failed!'
+        }
+    }
+}
