@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-    DOTNET_VERSION = '8.0.411'
-    DOTNET_ROOT = "${HOME}/.dotnet"
-    PATH = "${DOTNET_ROOT}:${PATH}"
-}
+        DOTNET_VERSION = '8.0.411'
+        DOTNET_ROOT = "${HOME}/.dotnet"
+        PATH = "${DOTNET_ROOT}:${PATH}"
+    }
 
     stages {
         stage('Setup .NET SDK') {
@@ -14,66 +14,26 @@ pipeline {
                 sh '''
                     wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
                     chmod +x dotnet-install.sh
-                    ./dotnet-install.sh --version $DOTNET_VERSION
+                    ./dotnet-install.sh --version $DOTNET_VERSION --install-dir $DOTNET_ROOT
                 '''
             }
         }
 
         stage('Restore Dependencies') {
-    steps {
-        echo '🔧 Restoring dependencies...'
-        sh '''
-            export PATH=$HOME/.dotnet:$PATH
-            cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
-            dotnet --version
-            dotnet restore MinimalAPIDemo.sln
-        '''
-    }
-}
-
-        stage('Build') {
-    steps {
-        echo '🏗️ Building project...'
-        sh '''
-            export PATH=$HOME/.dotnet:$PATH
-            cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
-            dotnet build --configuration Release
-        '''
-    }
-}
-
-        stage('Test') {
-    steps {
-        echo '🧪 Running tests...'
-        sh '''
-            export PATH=$HOME/.dotnet:$PATH
-            cd Downloads/dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
-            dotnet test --no-build
-        '''
-    }
-}
-
-        stage('Fake Deploy') {
             steps {
-                echo '🚀 Simulating deployment...'
+                echo '🔧 Restoring dependencies...'
                 sh '''
-                    echo "Deployment simulated!"
+                    export PATH=$DOTNET_ROOT:$PATH
+                    cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+                    dotnet --version
+                    dotnet restore MinimalAPIDemo.sln
                 '''
             }
         }
-    }
-        stage('Debug Workspace') {
-           steps {
-              sh 'pwd && ls -R'
-     }
- }
 
-    post {
-        success {
-            echo '🎉 Pipeline succeeded!'
-        }
-        failure {
-            echo '💥 Pipeline failed!'
-        }
-    }
-}
+        stage('Build') {
+            steps {
+                echo '🏗️ Building project...'
+                sh '''
+                    export PATH=$DOTNET_ROOT:$PATH
+                    cd dotnet-minimal-web-api-example/DotNetM
