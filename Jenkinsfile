@@ -8,6 +8,13 @@ pipeline {
     }
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                echo '📥 Cloning repository...'
+                checkout scm
+            }
+        }
+
         stage('Setup .NET SDK') {
             steps {
                 echo '📦 Installing .NET SDK...'
@@ -56,9 +63,7 @@ pipeline {
         stage('Fake Deploy') {
             steps {
                 echo '🚀 Simulating deployment...'
-                sh '''
-                    echo "Deployment simulated!"
-                '''
+                sh 'echo "Deployment simulated!"'
             }
         }
 
