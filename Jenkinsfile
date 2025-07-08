@@ -26,6 +26,25 @@ pipeline {
             }
         }
 
+        stage('Debug Workspace') {
+            steps {
+                echo '🔍 Debugging workspace...'
+                sh '''
+                    echo "📁 Current Working Directory:"
+                    pwd
+
+                    echo "📂 All Directories:"
+                    find . -type d || true
+
+                    echo "📃 Current Folder Contents:"
+                    ls -la
+
+                    echo "🌲 Tree structure (if tree installed):"
+                    command -v tree && tree || echo "tree not installed"
+                '''
+            }
+        }
+
         stage('Restore Dependencies') {
             steps {
                 echo '🔧 Restoring dependencies...'
@@ -64,16 +83,6 @@ pipeline {
             steps {
                 echo '🚀 Simulating deployment...'
                 sh 'echo "Deployment simulated!"'
-            }
-        }
-
-        stage('Debug Workspace') {
-            steps {
-                echo '🔍 Debugging workspace...'
-                sh '''
-                    pwd
-                    ls -R
-                '''
             }
         }
     }
