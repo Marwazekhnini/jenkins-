@@ -50,9 +50,9 @@ pipeline {
                 echo '🔧 Restoring dependencies...'
                 sh '''
                     export PATH=$DOTNET_ROOT:$PATH
-                    cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+                    cd DotNetMinimalAPIDemo
                     dotnet --version
-                    dotnet restore MinimalAPIDemo.sln
+                    dotnet restore
                 '''
             }
         }
@@ -62,7 +62,7 @@ pipeline {
                 echo '🏗️ Building project...'
                 sh '''
                     export PATH=$DOTNET_ROOT:$PATH
-                    cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+                    cd DotNetMinimalAPIDemo
                     dotnet build --configuration Release
                 '''
             }
@@ -73,7 +73,7 @@ pipeline {
                 echo '🧪 Running tests...'
                 sh '''
                     export PATH=$DOTNET_ROOT:$PATH
-                    cd dotnet-minimal-web-api-example/DotNetMinimalAPIDemo
+                    cd DotNetMinimalAPIDemo
                     dotnet test --no-build
                 '''
             }
