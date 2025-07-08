@@ -39,6 +39,9 @@ pipeline {
                     echo "📃 Current Folder Contents:"
                     ls -la
 
+                    echo "🧾 .csproj and .sln files:"
+                    find . -name "*.csproj" -o -name "*.sln"
+
                     echo "🌲 Tree structure (if tree installed):"
                     command -v tree && tree || echo "tree not installed"
                 '''
@@ -52,7 +55,9 @@ pipeline {
                     export PATH=$DOTNET_ROOT:$PATH
                     cd DotNetMinimalAPIDemo
                     dotnet --version
-                    dotnet restore
+
+                    # Replace with your actual project file name if needed
+                    dotnet restore DotNetMinimalAPIDemo.csproj
                 '''
             }
         }
@@ -63,7 +68,7 @@ pipeline {
                 sh '''
                     export PATH=$DOTNET_ROOT:$PATH
                     cd DotNetMinimalAPIDemo
-                    dotnet build --configuration Release
+                    dotnet build DotNetMinimalAPIDemo.csproj --configuration Release
                 '''
             }
         }
@@ -74,7 +79,7 @@ pipeline {
                 sh '''
                     export PATH=$DOTNET_ROOT:$PATH
                     cd DotNetMinimalAPIDemo
-                    dotnet test --no-build
+                    dotnet test DotNetMinimalAPIDemo.csproj --no-build
                 '''
             }
         }
