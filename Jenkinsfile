@@ -84,7 +84,7 @@ pipeline {
             }
         }
 
-        stage('Fake Deploy') {
+        stage('Deploy') {
             steps {
                 echo '🚀 Simulating deployment...'
                 sh 'echo "Deployment simulated!"'
